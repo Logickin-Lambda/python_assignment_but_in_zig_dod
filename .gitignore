@@ -1,3 +1,8 @@
 zig-out/*
 .zig-cache/*
 
+.idea/misc.xml
+.idea/modules.xml
+.idea/python_assignment_but_in_zig_dod.iml
+.idea/vcs.xml
+.idea/.gitignore
