@@ -1,6 +1,7 @@
 const std = @import("std");
 const Customers = @import("customers.zig");
 const Salable = @import("salable.zig");
+const Order = @import("orders.zig");
 
 pub fn main() !void {
     std.debug.print("<!--Skri-a Kaark-->\n", .{});
@@ -17,6 +18,11 @@ pub fn main() !void {
     defer Salable.deinit();
     try Salable.load_data(arena.allocator());
 
+    Order.init(arena.allocator());
+    defer Order.deinit();
+    try Order.load_data(arena.allocator());
+
     std.debug.print("test customer: {d}, {s}\n", .{ 1, Customers.names.get(1).? });
     std.debug.print("test product: {d}, {s}\n", .{ 9, Salable.names.get(5).? });
+    std.debug.print("test order: {d}, {any}\n", .{ 10, Order.records.get(10).? });
 }
