@@ -14,6 +14,10 @@ const OrderItems = struct {
     quantity: u32,
 };
 
+// This is the part I am unsure if I should do AoS or SoA because
+// all function related to this dataset use all of the data,
+// except that if there is by user_id search which I have use
+// a hashmap to speed up the search process.
 var records: std.AutoHashMap(u32, std.ArrayList(Order)) = undefined;
 var items: std.AutoHashMap(u32, std.ArrayList(OrderItems)) = undefined;
 
