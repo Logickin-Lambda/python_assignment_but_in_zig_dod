@@ -23,7 +23,7 @@ const moving_text =
 ;
 
 const separator = "==================================================================\n";
-const title = "|| Pharmacy Management System + || Unit no. xxxxxx || Ver: 2.0.0 ||\n";
+const title = "|| Pharmacy Management System + || Unit no. xxxxx || Ver: 2.0.0 ||\n";
 
 // input: []const u8 is unnecessary in this example,
 // but I want to reminds me of how to handle *const [x:0]u8 string into a slices
@@ -50,7 +50,7 @@ pub fn generate_logo(allocator: std.mem.Allocator, input: []const u8, proportion
     return text_array;
 }
 
-pub fn demoscene_transition(allocator: std.mem.Allocator, action: demoscene_action) !void {
+pub fn demoscene_slide(allocator: std.mem.Allocator, action: demoscene_action) !void {
 
     // instead of doing two functions, the logic behind showing and disappear are identical,
     // but traveling different directions
@@ -69,6 +69,51 @@ pub fn demoscene_transition(allocator: std.mem.Allocator, action: demoscene_acti
 
         for (text_list.items) |text| {
             std.debug.print("{s}\n", .{text});
+            allocator.destroy(&text);
+        }
+
+        std.time.sleep(20 * 1000 * 1000);
+    }
+}
+
+pub fn demoscene_text_shift(allocator: std.mem.Allocator, action: demoscene_action) !void {
+    var text_iter = std.mem.splitAny(u8, moving_text, "\n");
+    var text_list = std.ArrayList([]u8).init(allocator);
+    defer text_list.deinit();
+
+    while (text_iter.next()) |text| {
+
+        // because text from the iterator is always immutable
+        const text_mut = try allocator.dupe(u8, text);
+        try text_list.append(text_mut);
+    }
+
+    const text_row_len = text_list.items[0].len;
+
+    // this determine the direction
+    var direction: usize = undefined;
+    if (action == demoscene_action.scroll_left) {
+        direction = 1;
+    } else {
+        direction = text_row_len - 1;
+    }
+
+    for (0..text_row_len) |_| {
+        std.debug.print("\x1B[2J\x1B[H", .{}); // "clear" the screen
+
+        for (0..text_list.items.len) |j| {
+            std.mem.rotate(u8, text_list.items[j], direction);
+        }
+
+        var joined_string = try std.mem.join(allocator, "\n", text_list.items);
+        defer allocator.destroy(&joined_string);
+
+        var final_text_list = try generate_logo(allocator, joined_string, separator.len);
+        defer final_text_list.deinit();
+
+        for (final_text_list.items) |text| {
+            std.debug.print("{s}", .{text});
+            allocator.destroy(&text);
         }
 
         std.time.sleep(20 * 1000 * 1000);
@@ -123,5 +168,12 @@ test "generate_header" {
         }
     }
 
-    try demoscene_transition(arena.allocator(), demoscene_action.appear);
+    try demoscene_slide(arena.allocator(), demoscene_action.appear);
+}
+
+test "cyclic shift" {
+    var arena = std.heap.ArenaAllocator.init(std.testing.allocator);
+    defer arena.deinit();
+
+    try demoscene_text_shift(arena.allocator(), demoscene_action.scroll_right);
 }

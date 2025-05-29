@@ -27,6 +27,8 @@ pub fn main() !void {
     std.debug.print("test product: {d}, {s}\n", .{ 9, Salable.names.get(5).? });
     std.debug.print("test order: {d}, {any}\n", .{ 10, Order.records.get(10).? });
 
-    try Display.demoscene_transition(arena.allocator(), Display.demoscene_action.appear);
-    try Display.demoscene_transition(arena.allocator(), Display.demoscene_action.disappear);
+    try Display.demoscene_slide(arena.allocator(), Display.demoscene_action.appear);
+    try Display.demoscene_text_shift(arena.allocator(), Display.demoscene_action.scroll_right);
+    try Display.demoscene_text_shift(arena.allocator(), Display.demoscene_action.scroll_left);
+    try Display.demoscene_slide(arena.allocator(), Display.demoscene_action.disappear);
 }
