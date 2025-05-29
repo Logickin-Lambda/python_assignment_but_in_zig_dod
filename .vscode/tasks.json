@@ -1,0 +1,8 @@
+{
+    "version": "2.0.0",
+    "tasks": [{
+        "label": "python_to_zig_dod",
+        "type": "shell",
+        "command": "zig build" 
+    }]
+}

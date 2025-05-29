@@ -2,6 +2,7 @@ const std = @import("std");
 const Customers = @import("customers.zig");
 const Salable = @import("salable.zig");
 const Order = @import("orders.zig");
+const Display = @import("console_display.zig");
 
 pub fn main() !void {
     std.debug.print("<!--Skri-a Kaark-->\n", .{});
@@ -25,4 +26,7 @@ pub fn main() !void {
     std.debug.print("test customer: {d}, {s}\n", .{ 1, Customers.names.get(1).? });
     std.debug.print("test product: {d}, {s}\n", .{ 9, Salable.names.get(5).? });
     std.debug.print("test order: {d}, {any}\n", .{ 10, Order.records.get(10).? });
+
+    try Display.demoscene_transition(arena.allocator(), Display.demoscene_action.appear);
+    try Display.demoscene_transition(arena.allocator(), Display.demoscene_action.disappear);
 }
