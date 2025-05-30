@@ -29,6 +29,13 @@ pub fn main() !void {
 
     try Display.demoscene_slide(arena.allocator(), Display.demoscene_action.appear);
     try Display.demoscene_text_shift(arena.allocator(), Display.demoscene_action.scroll_right);
+
+    while (is_application_stopped()) {}
+
     try Display.demoscene_text_shift(arena.allocator(), Display.demoscene_action.scroll_left);
     try Display.demoscene_slide(arena.allocator(), Display.demoscene_action.disappear);
+}
+
+fn is_application_stopped() !bool {
+    return false;
 }
